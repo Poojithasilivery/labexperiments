@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cart</title>
+  <style>
+    body { font-family: Arial; max-width: 400px; margin: 50px auto; }
+    .item { display: flex; justify-content: space-between; margin: 10px 0; }
+    button { padding: 5px; }
+  </style>
+</head>
+<body>
+
+<h2>Cart Page</h2>
+
+<div id="products"></div>
+<h3 id="total"></h3>
+
+<script>
+let products = [
+  { name: "Shirt", price: 500 },
+  { name: "Shoes", price: 1000 },
+  { name: "Watch", price: 1500 }
+];
+
+let total = 0;
+
+function loadProducts() {
+  let html = "";
+  products.forEach((p, i) => {
+    html += `
+      <div class="item">
+        <span>${p.name} - ₹${p.price}</span>
+        <button onclick="add(${i})">Add</button>
+      </div>
+    `;
+  });
+  document.getElementById("products").innerHTML = html;
+}
+
+function add(index) {
+  total += products[index].price;
+  document.getElementById("total").innerText = "Total: ₹" + total;
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>

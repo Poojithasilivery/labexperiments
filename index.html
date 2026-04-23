@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart App</title>
+  <style>
+    body { font-family: Arial; margin:0; }
+    header { background:#333; color:white; padding:1rem; display:flex; justify-content:space-between; }
+    nav a { color:white; margin:0 10px; text-decoration:none; }
+    .container { padding:20px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+    .card { border:1px solid #ccc; padding:10px; border-radius:10px; }
+    .flex { display:flex; justify-content:space-between; align-items:center; }
+    button { padding:5px 10px; }
+    input { padding:5px; margin:5px 0; width:100%; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Shop</h2>
+  <nav>
+    <a href="#" onclick="showPage('login')">Login</a>
+    <a href="#" onclick="showPage('register')">Register</a>
+    <a href="#" onclick="showPage('catalog')">Catalog</a>
+    <a href="#" onclick="showPage('cart')">Cart</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- Login -->
+  <div id="login">
+    <h3>Login</h3>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- Register -->
+  <div id="register" class="hidden">
+    <h3>Register</h3>
+    <input type="text" id="regUser" placeholder="Username">
+    <input type="password" id="regPass" placeholder="Password">
+    <button onclick="register()">Register</button>
+  </div>
+
+  <!-- Catalog -->
+  <div id="catalog" class="hidden">
+    <h3>Products</h3>
+    <div class="grid" id="productList"></div>
+  </div>
+
+  <!-- Cart -->
+  <div id="cart" class="hidden">
+    <h3>Cart</h3>
+    <div id="cartItems"></div>
+    <h4 id="total"></h4>
+  </div>
+
+</div>
+
+<script>
+let users = [];
+let currentUser = null;
+let cart = [];
+
+const products = [
+  {id:1,name:'Shirt',price:500},
+  {id:2,name:'Shoes',price:1000},
+  {id:3,name:'Watch',price:1500}
+];
+
+function showPage(page) {
+  ['login','register','catalog','cart'].forEach(p=>{
+    document.getElementById(p).classList.add('hidden');
+  });
+  document.getElementById(page).classList.remove('hidden');
+}
+
+function register() {
+  let u = regUser.value;
+  let p = regPass.value;
+  users.push({u,p});
+  alert('Registered!');
+  showPage('login');
+}
+
+function login() {
+  let u = loginUser.value;
+  let p = loginPass.value;
+  let found = users.find(x=>x.u===u && x.p===p);
+  if(found){ currentUser=u; alert('Login success'); showPage('catalog'); loadProducts(); }
+  else alert('Invalid');
+}
+
+function loadProducts() {
+  let html='';
+  products.forEach(p=>{
+    html+=`<div class='card'>
+      <h4>${p.name}</h4>
+      <p>₹${p.price}</p>
+      <button onclick="addToCart(${p.id})">Add</button>
+    </div>`;
+  });
+  productList.innerHTML=html;
+}
+
+function addToCart(id) {
+  let item = products.find(p=>p.id===id);
+  cart.push(item);
+  alert('Added to cart');
+}
+
+function loadCart() {
+  let html=''; let total=0;
+  cart.forEach((item,i)=>{
+    total+=item.price;
+    html+=`<div class='flex'>
+      <span>${item.name}</span>
+      <span>₹${item.price}</span>
+    </div>`;
+  });
+  cartItems.innerHTML=html;
+  totalEl = document.getElementById('total');
+  totalEl.innerText = 'Total: ₹'+total;
+}
+
+// load cart when opened
+setInterval(()=>{
+  if(!document.getElementById('cart').classList.contains('hidden')){
+    loadCart();
+  }
+},500);
+</script>
+
+</body>
+</html>
